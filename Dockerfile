@@ -8,4 +8,8 @@ ADD VERSION /root/includes.binary/version
 RUN cp /root/includes.binary/version /root/includes.chroot/etc/version
 ADD package-lists /root/package-lists/
 RUN /root/buildboot/build_ramdisk.sh /root /root/init.gz /root/buildboot/init
+
+ADD https://raw.githubusercontent.com/grml/grml-scripts/master/usr_sbin/grml-chroot /usr/bin/grml-chroot
+RUN chmod +x /usr/bin/grml-chroot
+
 CMD ["/root/buildboot/d2d_wrapper.sh"]

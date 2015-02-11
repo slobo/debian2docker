@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# Build VBox guest additions
+VBOX_VERSION=4.3.20
+
+mkdir -p /vboxguest
+cd /vboxguest
+
+wget -O vboxguest.iso http://download.virtualbox.org/virtualbox/${VBOX_VERSION}/VBoxGuestAdditions_${VBOX_VERSION}.iso
+7z x vboxguest.iso -ir'!VBoxLinuxAdditions.run'
+rm vboxguest.iso
+
+KERNELHEADERS=$(basename $(find /usr/src/ -maxdepth 1 -name linux-headers\* ! -name \*common) | sort -u -r -V | head -1)
+if [ -z "$KERNELHEADERS" ] ; then
+  echo "Error: no kernel headers found for building the VirtualBox Guest Additions kernel module." >&2
+  exit 1
+fi
+
+KERNELVERSION=${KERNELHEADERS##linux-headers-}
+if [ -z "$KERNELVERSION" ] ; then
+  echo "Error: no kernel version could be identified." >&2
+  exit 1
+fi
+
+wget https://raw.githubusercontent.com/grml/grml-debootstrap/master/packer/fake-uname.c -O fake-uname.c
+gcc -shared -fPIC -ldl fake-uname.c -o fake-uname.so
+UTS_RELEASE=$KERNELVERSION LD_PRELOAD=`pwd`/fake-uname.so sh VBoxLinuxAdditions.run
+
+cd /
+rm -Rf /vboxguest
