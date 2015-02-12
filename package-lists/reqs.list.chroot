@@ -23,5 +23,5 @@ netbase
 nfs-common
 bzip2
 p7zip-full
-build-essential
 linux-headers-amd64
+build-essential

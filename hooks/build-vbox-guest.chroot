@@ -24,7 +24,9 @@ fi
 
 wget https://raw.githubusercontent.com/grml/grml-debootstrap/master/packer/fake-uname.c -O fake-uname.c
 gcc -shared -fPIC -ldl fake-uname.c -o fake-uname.so
-UTS_RELEASE=$KERNELVERSION LD_PRELOAD=`pwd`/fake-uname.so sh VBoxLinuxAdditions.run
+UTS_RELEASE=$KERNELVERSION LD_PRELOAD=`pwd`/fake-uname.so sh VBoxLinuxAdditions.run --nox11
+tail -10 /var/log/VBoxGuestAdditions.log
 
 cd /
 rm -Rf /vboxguest
+rm -Rf /opt/*/src
