@@ -3,3 +3,6 @@ sed -ri 's!/sbin/getty.*(tty[0-9]+).*!/bin/login -f docker </dev/\1 >/dev/\1 2>\
 
 # autosudo
 echo '%docker ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+
+# vbofs grup
+usermod -G vboxsf docker
