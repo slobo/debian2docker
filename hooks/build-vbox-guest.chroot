@@ -6,6 +6,8 @@ VBOX_VERSION=4.3.20
 mkdir -p /vboxguest
 cd /vboxguest
 
+apt-get install linux-headers-amd64 dkms gcc make bzip2 p7zip-full --yes
+
 wget -O vboxguest.iso http://download.virtualbox.org/virtualbox/${VBOX_VERSION}/VBoxGuestAdditions_${VBOX_VERSION}.iso
 7z x vboxguest.iso -ir'!VBoxLinuxAdditions.run'
 rm vboxguest.iso
@@ -26,6 +28,14 @@ wget https://raw.githubusercontent.com/grml/grml-debootstrap/master/packer/fake-
 gcc -shared -fPIC -ldl fake-uname.c -o fake-uname.so
 UTS_RELEASE=$KERNELVERSION LD_PRELOAD=`pwd`/fake-uname.so sh VBoxLinuxAdditions.run --nox11
 tail -10 /var/log/VBoxGuestAdditions.log
+
+for PACKAGE in $KERNELHEADERS linux-headers-amd64 gcc make bzip2 p7zip-full
+do
+	if ! apt-get purge --auto-remove --yes "${PACKAGE}"
+	then
+		echo "WARNING: ${PACKAGE} isn't installed"
+	fi
+done
 
 cd /
 rm -Rf /vboxguest

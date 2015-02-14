@@ -10,7 +10,6 @@ ifupdown
 iproute2
 iptables
 iputils-ping
-dkms
 linux-image-amd64
 openssh-server
 sudo
@@ -18,10 +17,3 @@ sysvinit
 traceroute
 wget
 xz-utils
-net-tools
-netbase
-nfs-common
-bzip2
-p7zip-full
-linux-headers-amd64
-build-essential
