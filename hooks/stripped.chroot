@@ -7,7 +7,6 @@
 ## This is free software, and you are welcome to redistribute it
 ## under certain conditions; see COPYING for details.
 
-
 set -e
 
 # WARNING: Using this hook will result in a stripped system, means,
@@ -20,7 +19,7 @@ set -e
 # be prepared to find and fix it for your own images.
 
 # Removing unused packages
-for PACKAGE in apt-utils aptitude man-db manpages info wget dselect bzip2 p7zip-full linux-headers-generic build-essential
+for PACKAGE in apt-utils wget
 do
 	if ! apt-get remove --purge --yes "${PACKAGE}"
 	then
