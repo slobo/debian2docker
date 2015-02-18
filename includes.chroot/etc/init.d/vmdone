@@ -1,0 +1,48 @@
+#! /bin/sh
+
+### BEGIN INIT INFO
+# Provides:           vmdone-init
+# Required-Start:     $all
+# Required-Stop:      $all
+# Default-Start:      2 3 4 5
+# Default-Stop:       0 1 6
+# Short-Description:  Marks the virtual machine as ready
+# Description
+#  Marks the virtual machine as ready
+### END INIT INFO
+
+guestproperty='VBoxControl guestproperty'
+done_property="/VirtualBox/D2D/Done"
+ ssh_property="/VirtualBox/D2D/SSH_KEY"
+
+mark() {
+  $guestproperty set $done_property $1 --flags TRANSRESET,RDONLYHOST
+}
+
+ssh_key=`$guestproperty get $ssh_property 2>/dev/null | grep "^Value:.*" | cut -d" " -f2-`
+
+# Carry out specific functions when asked to by the system
+case "$1" in
+  start)
+    echo "Marks the virtual machine as ready"
+    mark true
+    # Save ssh key
+    if [ -n "${ssh_key}" ]; then
+      ssh_dir=`getent passwd docker | cut -f6 -d:`/.ssh
+      mkdir -p $ssh_dir
+      echo "$ssh_key" > $ssh_dir/authorized_keys
+      chmod og-rwx -R $ssh_dir
+      chown docker:docker -R $ssh_dir
+    fi
+    ;;
+  stop)
+    echo "Clears the virtual machine as ready"
+    mark false
+    ;;
+  *)
+    echo "Usage: /etc/init.d/vmdone {start|stop}"
+    exit 1
+    ;;
+esac
+
+exit 0
