@@ -1,0 +1,26 @@
+#!/bin/sh
+
+set -x
+
+get_property () {
+  VBoxControl guestproperty get /VirtualBox/D2D/${1} | grep "^Value:.*" | cut -d" " -f2-
+}
+
+swap_factor=`get_property swap_factor`
+if [ -z ${swap_factor} ]; then swap_factor="1.5"; fi
+
+# Make a swap file with double of memory size
+swap_path=/mnt/sda1
+swap_file=${swap_path}/swapfile
+swap_size=`cat /proc/meminfo | grep MemTotal | awk -v factor=${swap_factor} '{printf "%.0f\n",($2 * factor)}'`
+
+if [ -d ${swap_path} ]; then
+  # Make swap file
+  if [ -f ${swap_file} ]; then rm ${swap_file}; fi
+  fallocate -l ${swap_size}K ${swap_file}
+  chmod 0600 ${swap_file}
+
+  # Format and active swap
+  mkswap ${swap_file}
+  swapon ${swap_file}
+fi
