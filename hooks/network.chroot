@@ -1,0 +1,3 @@
+#!/bin/sh
+
+sed -i 's/#timeout 60/timeout 10/g' /etc/dhcp/dhclient.conf

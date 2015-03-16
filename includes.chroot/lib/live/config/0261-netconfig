@@ -1,0 +1,26 @@
+#!/bin/sh
+
+get_property () {
+  VBoxControl guestproperty get /VirtualBox/D2D/eth0/${1} | grep "^Value:.*" | cut -d" " -f2-
+}
+
+address=`get_property address`
+netmask=`get_property netmask`
+network=`get_property network`
+
+file=/etc/network/interfaces.d/eth0
+
+# Get interface config
+if [ -n ${address} -a -n ${network} -a -n ${netmask} ]; then
+  echo "Configuring eth0 with: ${address} ${netmask} ${network}"
+  echo "auto eth0" > $file
+  echo "allow-hotplug eth0" >> $file
+  echo "iface eth0 inet static" >> $file
+  echo "address ${address}" >> $file
+  echo "netmask ${netmask}" >> $file
+  echo "network ${network}" >> $file
+  /etc/init.d/networking stop
+  /etc/init.d/networking start
+else
+  echo "Error while configuring eth0"
+fi
