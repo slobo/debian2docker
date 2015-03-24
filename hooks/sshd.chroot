@@ -1,0 +1,5 @@
+#!/bin/sh
+
+file=/etc/ssh/sshd_config
+sed -i 's/#GSSAPIAuthentication no/GSSAPIAuthentication no/g' $file
+echo "UseDNS no" >> $file
