@@ -4,11 +4,11 @@ set -e
 
 if [ ! -f /usr/bin/docker ]
 then
-wget https://get.docker.io/builds/Linux/x86_64/docker-latest.tgz -O /tmp/docker.tgz
+wget https://download.docker.com/linux/static/stable/x86_64/docker-18.09.1.tgz -O /tmp/docker.tgz
 mkdir /tmp/docker
 tar -xpf /tmp/docker.tgz -C /tmp/docker/
 rm /tmp/docker.tgz
-mv /tmp/docker/usr/local/bin/docker /usr/bin/docker
+mv /tmp/docker/docker/* /usr/bin/
 rm -rf /tmp/docker
 fi
 

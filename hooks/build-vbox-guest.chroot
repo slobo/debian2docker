@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Build VBox guest additions
-VBOX_VERSION=5.0.2
+VBOX_VERSION=6.0.4
 
 mkdir -p /vboxguest
 cd /vboxguest
